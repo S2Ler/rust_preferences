@@ -1,4 +1,4 @@
-[root]
-name = "wioso"
+[[package]]
+name = "rust_preferences"
 version = "0.1.0"
 

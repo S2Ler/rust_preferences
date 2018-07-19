@@ -15,7 +15,6 @@ impl Preferences {
 
 impl prefs::Preferences for Preferences {
     fn get<Key: prefs::Key>(&self, key: Key) -> Option<Key::PreferenceValueType> {
-        println!("getting '{}'", key.raw_key());
         let values = self.values.lock().unwrap();
         if let Some(value_data) = values.get(&key.raw_key()) {
             Key::PreferenceValueType::decode(&value_data)
@@ -26,7 +25,6 @@ impl prefs::Preferences for Preferences {
 
     fn set<Key: prefs::Key<PreferenceValueType=Value>, Value: prefs::Value>(&self, value: Option<Value>, key: Key) {
         let key = key.raw_key();
-        println!("setting '{}'", key);
         let mut values = self.values.lock().unwrap();
         if let Some(Some(value_data)) = value.map(|v| v.encode()) {
             values.insert(key, value_data);

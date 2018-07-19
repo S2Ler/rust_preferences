@@ -1,8 +1,8 @@
-mod prefs;
-mod mem_prefs;
+extern crate rust_preferences;
 
-use prefs::*;
-use prefs::Preferences;
+use rust_preferences::prefs::*;
+use rust_preferences::prefs::Preferences;
+use rust_preferences::mem_prefs;
 
 use std::thread;
 use std::sync::{Arc};
@@ -47,16 +47,16 @@ impl Value for Name {
 
 fn main() {
     let prefs = Arc::new(mem_prefs::Preferences::new());
-    let mut handles = Vec::new();
+    let mut write_handles = Vec::new();
     for idx in 0..10 {
         let prefs = prefs.clone();
         let handle = thread::spawn(move || {
             prefs.set(Some(Name(format!("Alex {}", idx))), NameKey{});
         });
-        handles.push(handle);
+        write_handles.push(handle);
     }
 
-    let mut handles2 = Vec::new();
+    let mut read_handles = Vec::new();
 
     for _ in 0..10 {
         let prefs = prefs.clone();
@@ -64,8 +64,7 @@ fn main() {
             let name = prefs.get(NameKey::new());
             println!("Got: {:?}", name);
         });
-        handles2.push(handle);
+        read_handles.push(handle);
     }
     std::thread::sleep(Duration::from_secs(10));
-
 }
